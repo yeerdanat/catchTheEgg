@@ -1,4 +1,5 @@
 import pygame 
+import random
 
 clock = pygame.time.Clock()
 pygame.init()
@@ -28,8 +29,30 @@ rt=pygame.transform.scale(rt, (433, 246))
 rb=pygame.image.load('images/right-bottom.png')
 rb=pygame.transform.scale(rb, (433, 246))
 
-
+#initial position
 current_or='lt'
+
+
+egg = pygame.image.load('images/egg.png')
+egg = pygame.transform.scale(egg, (22,30))
+egg = pygame.transform.rotate(egg, 25)
+
+egg_seq=0
+
+#initial coordinates and increment
+x=2000
+y=2000
+incX=0
+incY=0
+
+
+
+
+
+timer = pygame.USEREVENT+1
+pygame.time.set_timer(timer, 4000)
+
+
 run=True
 while run:
 
@@ -65,7 +88,10 @@ while run:
         screen.blit(rt, (200, 190))
     else:
         screen.blit(rb, (200, 190))
- 
+    
+    screen.blit(egg, (x,y))
+    x+=incX
+    y+=incY
 
     pygame.display.update()
 
@@ -73,5 +99,28 @@ while run:
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-    
+            if event.type == timer:
+                egg_seq=random.randrange(1,5)
+                if egg_seq ==1:
+                    x=40
+                    y=145
+                    incX=1.7
+                    incY=1.1
+                if egg_seq ==2:
+                    x=40
+                    y=255
+                    incX=1.7
+                    incY=1.1
+                if egg_seq ==3:
+                    x=690
+                    y=130
+                    incX=-1.7
+                    incY=1.1
+                if egg_seq ==4:
+                    x=690
+                    y=245
+                    incX=-1.7
+                    incY=1.1
+            
+
     clock.tick(60)
