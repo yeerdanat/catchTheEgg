@@ -36,6 +36,8 @@ current_or='lt'
 egg = pygame.image.load('images/egg.png')
 egg = pygame.transform.scale(egg, (22,30))
 egg = pygame.transform.rotate(egg, 25)
+mt=pygame.image.load('images/mistake.png')
+mt=pygame.transform.scale(mt,(40,40))
 
 egg_seq=0
 
@@ -45,13 +47,31 @@ y=2000
 incX=0
 incY=0
 
-
-
-
+bestScore=0
+score=0
+mistakes=0
 
 timer = pygame.USEREVENT+1
 pygame.time.set_timer(timer, 4000)
 
+def score_show(score):
+
+    if score<10:
+        score='000'+str(score)
+    elif score<100:
+        score='00'+str(score)
+    elif score<1000:
+        score='0'+str(score)
+    else:
+        score=str(score)
+
+    text = font_score.render(score, True, (0,0,0))
+    screen.blit(text, (510, 10))
+
+def mistakes_show(mistakes):   
+        if mistakes>=1:
+            for i in range(1, mistakes+1):
+                screen.blit(mt, (460+i*45, 70))
 
 run=True
 while run:
@@ -92,6 +112,22 @@ while run:
     screen.blit(egg, (x,y))
     x+=incX
     y+=incY
+
+    if mistakes<4 and x!=2000 and ((egg_seq==1 and x>123.2 and y>198.8 and current_or=='lt') or (egg_seq==2 and x>130 and y>313.1 and current_or=='lb') or (egg_seq==3 and x<584.5 and y>198.1 and current_or=='rt') or (egg_seq==4 and x<595 and y>306.6 and current_or=='rb')):     
+            x=2000
+            y=2000
+            incX=0
+            incY=0 
+            score+=1
+    if x!=2000 and ((egg_seq==1 and x>123.2 and y>198.8 and current_or!='lt') or ( egg_seq==2 and x>130 and y>313.1 and current_or!='lb') or (egg_seq==3 and x<584.5 and y>198.1 and current_or!='rt') or (egg_seq==4 and x<595 and y>306.6 and current_or!='rb')):
+            x=2000
+            y=2000
+            incX=0
+            incY=0
+            mistakes+=1
+
+    score_show(score)
+    mistakes_show(mistakes)
 
     pygame.display.update()
 
