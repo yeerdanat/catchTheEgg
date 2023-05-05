@@ -50,6 +50,7 @@ incY=0
 bestScore=0
 score=0
 mistakes=0
+buff = 60 #acceleration with levels
 
 timer = pygame.USEREVENT+1
 pygame.time.set_timer(timer, 4000)
@@ -73,63 +74,126 @@ def mistakes_show(mistakes):
             for i in range(1, mistakes+1):
                 screen.blit(mt, (460+i*45, 70))
 
+levelsMenu=False
+game_paused=False
 run=True
 while run:
+    if game_paused == True:
+        screen.fill((52,78,91))
+        text = font.render('Press SPACE to continue', True, (255,255,255))
+        screen.blit(text, (170,110))
+        
 
-    key = pygame.key.get_pressed()
-    if key[pygame.K_LEFT]:
-        if current_or=='rb' or current_or=='lb':
-            current_or='lb'
-        else:
-            current_or='lt'
-    if key[pygame.K_RIGHT]:
-        if current_or=='rb' or current_or=='lb':
-            current_or='rb'
-        else:
-            current_or='rt'
-    if key[pygame.K_UP]:
-        if current_or=='rb' or current_or=='rt':
-            current_or='rt'
-        else:
-            current_or='lt'
-    if key[pygame.K_DOWN]:
-        if current_or=='rb' or current_or=='rt':
-            current_or='rb'
-        else:
-            current_or='lb'
+        textLvl = font.render('Change the Level', True, (255,255,255))
+        lvlRect= textLvl.get_rect(topleft = (230,220))
+        screen.blit(textLvl, lvlRect)
+        mouse = pygame.mouse.get_pos() 
+
+        textQuit = font.render('Quit the game', True, (255,255,255))
+        quitRect=textQuit.get_rect(topleft=(264, 330))
+        screen.blit(textQuit, quitRect)
 
 
-    screen.blit(bg, (0, 0))
-    if current_or=='lt':
-        screen.blit(lt, (120, 190))
-    elif current_or =='lb':
-        screen.blit(lb, (120, 190))
-    elif current_or=='rt':
-        screen.blit(rt, (200, 190))
-    else:
-        screen.blit(rb, (200, 190))
+        if (lvlRect.collidepoint(mouse)) and (pygame.mouse.get_pressed()[0]):
+            levelsMenu=True
+
+        if (quitRect.collidepoint(mouse)) and (pygame.mouse.get_pressed()[0]):
+            run = False
+            pygame.quit()
+
+        key = pygame.key.get_pressed()
+        if key[pygame.K_SPACE]:
+            game_paused=False
+
+        if levelsMenu:
+            screen.fill((52,78,91))
     
-    screen.blit(egg, (x,y))
-    x+=incX
-    y+=incY
+            text = font.render('Choose the level', True, (255,255,255))
+            screen.blit(text, (240,60))
+            textEasy = font.render('Easy level', True, (255,255,255))
+            easyRect = textEasy.get_rect(topleft=(120, 160))
+            screen.blit(textEasy, easyRect)
+            textMedium = font.render('Medium level', True, (255,255,255))
+            medRect = textMedium.get_rect(topleft=(120, 260))
+            screen.blit(textMedium, medRect)
+            textHard = font.render('Hard level', True, (255,255,255))
+            hardRect = textHard.get_rect(topleft=(120, 360))
+            screen.blit(textHard, hardRect)
 
-    if mistakes<4 and x!=2000 and ((egg_seq==1 and x>123.2 and y>198.8 and current_or=='lt') or (egg_seq==2 and x>130 and y>313.1 and current_or=='lb') or (egg_seq==3 and x<584.5 and y>198.1 and current_or=='rt') or (egg_seq==4 and x<595 and y>306.6 and current_or=='rb')):     
-            x=2000
-            y=2000
-            incX=0
-            incY=0 
-            score+=1
-    if x!=2000 and ((egg_seq==1 and x>123.2 and y>198.8 and current_or!='lt') or ( egg_seq==2 and x>130 and y>313.1 and current_or!='lb') or (egg_seq==3 and x<584.5 and y>198.1 and current_or!='rt') or (egg_seq==4 and x<595 and y>306.6 and current_or!='rb')):
-            x=2000
-            y=2000
-            incX=0
-            incY=0
-            mistakes+=1
+            if (easyRect.collidepoint(mouse)) and (pygame.mouse.get_pressed()[0]):
+                buff=60
+                score=0
+                mistakes=0
+                levelsMenu=False
+                game_paused=False
+            if (medRect.collidepoint(mouse)) and (pygame.mouse.get_pressed()[0]):
+                buff=120
+                score=0
+                mistakes=0
+                levelsMenu=False
+                game_paused=False
+            if (hardRect.collidepoint(mouse)) and (pygame.mouse.get_pressed()[0]):
+                buff=150
+                score=0
+                mistakes=0
+                levelsMenu=False
+                game_paused=False
+    else:
 
-    score_show(score)
-    mistakes_show(mistakes)
+        key = pygame.key.get_pressed()
+        if key[pygame.K_LEFT]:
+            if current_or=='rb' or current_or=='lb':
+                current_or='lb'
+            else:
+                current_or='lt'
+        if key[pygame.K_RIGHT]:
+            if current_or=='rb' or current_or=='lb':
+                current_or='rb'
+            else:
+                current_or='rt'
+        if key[pygame.K_UP]:
+            if current_or=='rb' or current_or=='rt':
+                current_or='rt'
+            else:
+                current_or='lt'
+        if key[pygame.K_DOWN]:
+            if current_or=='rb' or current_or=='rt':
+                current_or='rb'
+            else:
+                current_or='lb'
 
-    if mistakes>3 or score<0:
+
+        screen.blit(bg, (0, 0))
+        if current_or=='lt':
+            screen.blit(lt, (120, 190))
+        elif current_or =='lb':
+            screen.blit(lb, (120, 190))
+        elif current_or=='rt':
+            screen.blit(rt, (200, 190))
+        else:
+            screen.blit(rb, (200, 190))
+        
+        screen.blit(egg, (x,y))
+        x+=incX
+        y+=incY
+
+        if mistakes<4 and x!=2000 and ((egg_seq==1 and x>123.2 and y>198.8 and current_or=='lt') or (egg_seq==2 and x>130 and y>313.1 and current_or=='lb') or (egg_seq==3 and x<584.5 and y>198.1 and current_or=='rt') or (egg_seq==4 and x<595 and y>306.6 and current_or=='rb')):     
+                x=2000
+                y=2000
+                incX=0
+                incY=0 
+                score+=1
+        if x!=2000 and ((egg_seq==1 and x>123.2 and y>198.8 and current_or!='lt') or ( egg_seq==2 and x>130 and y>313.1 and current_or!='lb') or (egg_seq==3 and x<584.5 and y>198.1 and current_or!='rt') or (egg_seq==4 and x<595 and y>306.6 and current_or!='rb')):
+                x=2000
+                y=2000
+                incX=0
+                incY=0
+                mistakes+=1
+
+        score_show(score)
+        mistakes_show(mistakes)
+
+        if mistakes>3 or score<0:
             screen.fill((92, 92, 92))
             text = font.render('You lost', True, (255,255,255))
             text_score = font.render("Score: "+ str(score), True, (255,255,255))
@@ -151,6 +215,9 @@ while run:
     pygame.display.update()
 
     for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key==pygame.K_ESCAPE:
+                    game_paused= True
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
@@ -178,4 +245,4 @@ while run:
                     incY=1.1
             
 
-    clock.tick(60)
+    clock.tick(buff)
