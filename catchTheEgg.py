@@ -129,6 +129,25 @@ while run:
     score_show(score)
     mistakes_show(mistakes)
 
+    if mistakes>3 or score<0:
+            screen.fill((92, 92, 92))
+            text = font.render('You lost', True, (255,255,255))
+            text_score = font.render("Score: "+ str(score), True, (255,255,255))
+            if score>bestScore:
+                bestScore=score
+            text_bestscore= font.render("Best Score: "+str(bestScore), True, (255,255,255))
+            text_restart= font.render("play again", True, (255,255,255))
+            restart_rect=text_restart.get_rect(topleft=(295,360))
+            screen.blit(text, (310, 150)) 
+            screen.blit(text_score, (310, 200))
+            screen.blit(text_bestscore, (275, 250))
+            screen.blit(text_restart, restart_rect)
+            pygame.display.update()
+            mouse = pygame.mouse.get_pos()   
+            if (restart_rect.collidepoint(mouse)) and (pygame.mouse.get_pressed()[0]):
+                score=0
+                mistakes=0    
+
     pygame.display.update()
 
     for event in pygame.event.get():
