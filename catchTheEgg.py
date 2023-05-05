@@ -38,8 +38,11 @@ egg = pygame.transform.scale(egg, (22,30))
 egg = pygame.transform.rotate(egg, 25)
 mt=pygame.image.load('images/mistake.png')
 mt=pygame.transform.scale(mt,(40,40))
+bomb = pygame.image.load('images/bombs.png')
+bomb = pygame.transform.scale(bomb, (22,30))
 
 egg_seq=0
+bomb_seq=0
 
 #initial coordinates and increment
 x=2000
@@ -47,6 +50,13 @@ y=2000
 incX=0
 incY=0
 
+#bomb coordinates
+xb=2000
+yb=2000
+incXb=0
+incYb=0
+
+bombs=False
 bestScore=0
 score=0
 mistakes=0
@@ -54,6 +64,8 @@ buff = 60 #acceleration with levels
 
 timer = pygame.USEREVENT+1
 pygame.time.set_timer(timer, 4000)
+timerbomb = pygame.USEREVENT+1
+pygame.time.set_timer(timerbomb, 7000)
 
 def score_show(score):
 
@@ -76,6 +88,7 @@ def mistakes_show(mistakes):
 
 levelsMenu=False
 game_paused=False
+
 run=True
 while run:
     if game_paused == True:
@@ -124,18 +137,21 @@ while run:
                 buff=60
                 score=0
                 mistakes=0
+                bombs=False
                 levelsMenu=False
                 game_paused=False
             if (medRect.collidepoint(mouse)) and (pygame.mouse.get_pressed()[0]):
                 buff=120
                 score=0
                 mistakes=0
+                bombs=False
                 levelsMenu=False
                 game_paused=False
             if (hardRect.collidepoint(mouse)) and (pygame.mouse.get_pressed()[0]):
                 buff=150
                 score=0
                 mistakes=0
+                bombs=True
                 levelsMenu=False
                 game_paused=False
     else:
@@ -177,18 +193,33 @@ while run:
         x+=incX
         y+=incY
 
+        screen.blit(bomb, (xb,yb))
+        xb+=incXb
+        yb+=incYb
+
         if mistakes<4 and x!=2000 and ((egg_seq==1 and x>123.2 and y>198.8 and current_or=='lt') or (egg_seq==2 and x>130 and y>313.1 and current_or=='lb') or (egg_seq==3 and x<584.5 and y>198.1 and current_or=='rt') or (egg_seq==4 and x<595 and y>306.6 and current_or=='rb')):     
-                x=2000
-                y=2000
-                incX=0
-                incY=0 
-                score+=1
+            x=2000
+            y=2000
+            incX=0
+            incY=0 
+            score+=1
         if x!=2000 and ((egg_seq==1 and x>123.2 and y>198.8 and current_or!='lt') or ( egg_seq==2 and x>130 and y>313.1 and current_or!='lb') or (egg_seq==3 and x<584.5 and y>198.1 and current_or!='rt') or (egg_seq==4 and x<595 and y>306.6 and current_or!='rb')):
-                x=2000
-                y=2000
-                incX=0
-                incY=0
-                mistakes+=1
+            x=2000
+            y=2000
+            incX=0
+            incY=0
+            mistakes+=1
+        if mistakes<4 and xb!=2000 and ((bomb_seq==1 and xb>123.2 and yb>198.8 and current_or=='lt') or (bomb_seq==2 and xb>130 and yb>313.1 and current_or=='lb') or (bomb_seq==3 and xb<584.5 and yb>198.1 and current_or=='rt') or (bomb_seq==4 and xb<595 and yb>306.6 and current_or=='rb')):     
+            xb=2000
+            yb=2000
+            incXb=0
+            incYb=0 
+            score-=1
+        if ((bomb_seq==1 and xb>123.2 and yb>198.8 and current_or!='lt') or (bomb_seq==2 and xb>130 and yb>313.1 and current_or!='lb') or (bomb_seq==3 and xb<584.5 and yb>198.1 and current_or!='rt') or (bomb_seq==4 and xb<595 and yb>306.6 and current_or!='rb')):     
+            xb=2000
+            yb=2000
+            incXb=0
+            incYb=0 
 
         score_show(score)
         mistakes_show(mistakes)
@@ -243,6 +274,27 @@ while run:
                     y=245
                     incX=-1.7
                     incY=1.1
-            
-
+            if event.type==timerbomb:
+                if bombs==True:
+                    bomb_seq=random.randrange(1,5)
+                    if bomb_seq ==1:
+                        xb=40
+                        yb=145
+                        incXb=1.7
+                        incYb=1.1
+                    if bomb_seq ==2:
+                        xb=40
+                        yb=255
+                        incXb=1.7
+                        incYb=1.1
+                    if bomb_seq ==3:
+                        xb=690
+                        yb=130
+                        incXb=-1.7
+                        incYb=1.1
+                    if bomb_seq ==4:
+                        xb=690
+                        yb=245
+                        incXb=-1.7
+                        incYb=1.1
     clock.tick(buff)
